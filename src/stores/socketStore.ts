@@ -5,9 +5,9 @@ import axios from "axios";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
-import config from "../../app-config.json"
+import config from "../../app-config.json";
 
-console.log(config)
+console.log(config);
 
 export const useSocketStore = defineStore("socketStore", () => {
   const globLocal = ref({});
@@ -24,54 +24,53 @@ export const useSocketStore = defineStore("socketStore", () => {
 
   subToKey(wsId, "activeNonce", apiKey);
 
-  watch(
-    globLocal,
-    () => {
-      console.log("globLocal updated");
+  // watch(
+  //   globLocal,
+  //   () => {
+  //     console.log("globLocal updated");
 
-      let basePath = "https://api.iotify.io";
+  //     let basePath = "https://api.iotify.io";
 
-      const apiClient = axios.create({
-        baseURL: basePath + "/api/",
-        timeout: 10000,
-        withCredentials: false,
-        headers: {
-          domain: "nsim.iotify.io",
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          key: apiKey,
-        },
-      });
+  //     const apiClient = axios.create({
+  //       baseURL: basePath + "/api/",
+  //       timeout: 10000,
+  //       withCredentials: false,
+  //       headers: {
+  //         domain: "nsim.iotify.io",
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         key: apiKey,
+  //       },
+  //     });
 
-      let keys = Object.keys(globLocal.value);
+  //     let keys = Object.keys(globLocal.value);
 
-      let newNonce = uuidv4();
-      activeNonces.push(newNonce);
+  //     let newNonce = uuidv4();
+  //     activeNonces.push(newNonce);
 
-      let data = keys.map((k) => {
-        return {
-          key: k,
-          value: JSON.stringify({
-            ...globLocal.value[k],
-            activeNonce: newNonce,
-          }),
-        };
-      });
+  //     let data = keys.map((k) => {
+  //       return {
+  //         key: k,
+  //         value: JSON.stringify({
+  //           ...globLocal.value[k],
+  //           activeNonce: newNonce,
+  //         }),
+  //       };
+  //     });
 
+  //     console.log("Sending POST Req ", data);
 
-      console.log("Sending POST Req ", data);
-
-      let response = apiClient
-        .post(`/datastore/${wsId}/glob/bulkUpload`, data)
-        .then(() => {
-          console.log("bulkUpload success");
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    { deep: true }
-  );
+  //     // let response = apiClient
+  //     //   .post(`/datastore/${wsId}/glob/bulkUpload`, data)
+  //     //   .then(() => {
+  //     //     console.log("bulkUpload success");
+  //     //   })
+  //     //   .catch(function (error) {
+  //     //     console.log(error);
+  //     //   });
+  //   },
+  //   { deep: true }
+  // );
 
   function subToKey(wsId: string, key: string, apiKey: string) {
     console.log("Inside socket action. Calling wsClient.subscribe");

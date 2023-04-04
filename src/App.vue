@@ -6,16 +6,12 @@
           <div class="renderer">
             <Renderer :antialias="true">
               <PerspectiveCamera :position="[0, 2, 2]">
-                <OrbitControls
-                  :target="[0, 0.5, 0]"
-                  :enable-pan="true"
-                
-                />
+                <OrbitControls :target="[0, 0.5, 0]" :enable-pan="true" />
               </PerspectiveCamera>
               <Scene background="#f9f9f9">
                 <AmbientLight :position="[0, 0, 10]" :intensity="1" />
                 <GLTFLoader
-                  ref="model"                 
+                  ref="model"
                   :url="modelURL"
                   :scale="[2, 2, 2]"
                   @load="findMeshes"
@@ -25,8 +21,10 @@
           </div>
         </div>
       </el-col>
+
       <el-col :span="6" :offset="6">
         <el-row>
+          <el-button style="width: 100%" @click="updateRemote">Push</el-button>
           <div v-for="mesh in meshes">
             <el-card class="box-card" style="margin: 10px; width: 40vw">
               <template #header>
@@ -45,7 +43,9 @@
                       <span>R: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].color.r"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].color.r
+                        "
                         :min="0"
                         :max="1"
                         :step="0.001"
@@ -55,7 +55,9 @@
                       <span>G: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].color.g"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].color.g
+                        "
                         :min="0"
                         :max="1"
                         :step="0.001"
@@ -65,7 +67,9 @@
                       <span>B: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].color.b"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].color.b
+                        "
                         :min="0"
                         :max="1"
                         :step="0.001"
@@ -77,7 +81,9 @@
                       <span>X: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].position.x"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].position.x
+                        "
                         :min="0"
                         :max="10"
                         :step="0.001"
@@ -87,7 +93,9 @@
                       <span>Y: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].position.y"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].position.y
+                        "
                         :min="0"
                         :max="10"
                         :step="0.001"
@@ -97,7 +105,9 @@
                       <span>Z: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].position.z"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].position.z
+                        "
                         :min="0"
                         :max="10"
                         :step="0.001"
@@ -109,7 +119,9 @@
                       <span>X: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].rotation.x"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].rotation.x
+                        "
                         :min="-3.14"
                         :max="3.14"
                         :step="0.001"
@@ -119,7 +131,9 @@
                       <span>Y: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].rotation.y"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].rotation.y
+                        "
                         :min="-3.14"
                         :max="3.14"
                         :step="0.001"
@@ -129,7 +143,9 @@
                       <span>Z: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].rotation.z"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].rotation.z
+                        "
                         :min="-3.14"
                         :max="3.14"
                         :step="0.001"
@@ -141,7 +157,9 @@
                       <span>X: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].scale.x"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].scale.x
+                        "
                         :min="0"
                         :max="3"
                         :step="0.01"
@@ -151,7 +169,9 @@
                       <span>Y: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].scale.y"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].scale.y
+                        "
                         :min="0"
                         :max="3"
                         :step="0.01"
@@ -161,7 +181,9 @@
                       <span>Z: </span>
                       <el-slider
                         style="padding: 5px"
-                        v-model="socketStore.globLocal[`mesh-${mesh.name}`].scale.z"
+                        v-model="
+                          socketStore.globLocal[`mesh-${mesh.name}`].scale.z
+                        "
                         :min="0"
                         :max="3"
                         :step="0.01"
@@ -184,31 +206,62 @@
 <script setup lang="ts">
 import { Renderer, Scene } from "@janvorisek/drie";
 import { GLTFLoader, AmbientLight } from "@janvorisek/drie";
-
+import axios from "axios";
 import { ref, reactive, onMounted, computed, watch } from "vue";
 
 import { useSocketStore } from "@/stores/socketStore";
 
-import config from "../app-config.json"
-
-
+import config from "../app-config.json";
 
 const socketStore = useSocketStore();
 
 let wsId = config.WORKSPACE_ID;
 let apiKey = config.API_KEY;
-let modelURL = config.MODEL_URL
-
-
+let modelURL = config.MODEL_URL;
 
 const model = ref(null);
 
+const updateRemote = () => {
+  console.log("Sending bulkUpload Req");
 
+  let basePath = "https://api.iotify.io";
+
+  const apiClient = axios.create({
+    baseURL: basePath + "/api/",
+    timeout: 10000,
+    withCredentials: false,
+    headers: {
+      domain: "nsim.iotify.io",
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      key: apiKey,
+    },
+  });
+
+  let keys = Object.keys(socketStore.globLocal);
+
+  let data = keys.map((k) => {
+    return {
+      key: k,
+      value: JSON.stringify(socketStore.globLocal[k]),
+    };
+  });
+
+  console.log("Sending POST Req ", data);
+
+  let response = apiClient
+    .post(`/datastore/${wsId}/glob/bulkUpload`, data)
+    .then(() => {
+      console.log("bulkUpload success");
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+};
 const updateProps = () => {
   console.log("slider updated");
 
   meshes.value.forEach((m) => {
-
     let props = socketStore.globLocal[`mesh-${m.name}`];
 
     m.material.color.setRGB(props.color.r, props.color.g, props.color.b);
@@ -216,19 +269,15 @@ const updateProps = () => {
     m.rotation.set(props.rotation.x, props.rotation.y, props.rotation.z);
     m.scale.set(props.scale.x, props.scale.y, props.scale.z);
 
-    console.log(`Updated Mesh ${m.name}`)
-
+    console.log(`Updated Mesh ${m.name}`);
   });
-
-  
 };
 
 const meshes = ref([]);
 const meshProps = ref({});
 
-
-watch(socketStore.globLocal, ()=> {
-  console.log("Detected change in globLocal")
+watch(socketStore.globLocal, () => {
+  console.log("Detected change in globLocal");
 
   // meshes.value.forEach((m) => {
   //   if(socketStore.globLocal[`mesh-${m.name}`]){
@@ -237,8 +286,8 @@ watch(socketStore.globLocal, ()=> {
   //   }
   // })
 
-  updateProps()
-})
+  updateProps();
+});
 
 const setFabricColor = () => {
   if (model.value === null) return;
@@ -286,7 +335,9 @@ const findMeshes = () => {
         },
       };
 
-      console.log(JSON.stringify(socketStore.globLocal[`mesh-${child.name}`],null,2))
+      console.log(
+        JSON.stringify(socketStore.globLocal[`mesh-${child.name}`], null, 2)
+      );
 
       socketStore.subToKey(wsId, `mesh-${child.name}`, apiKey);
     } else {
